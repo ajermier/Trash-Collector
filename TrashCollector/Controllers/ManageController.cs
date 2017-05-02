@@ -7,6 +7,9 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using TrashCollector.Models;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System.Collections.Generic;
+using System.Web.Security;
 
 namespace TrashCollector.Controllers
 {
@@ -32,9 +35,9 @@ namespace TrashCollector.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -61,6 +64,7 @@ namespace TrashCollector.Controllers
                 : message == ManageMessageId.Error ? "An error has occurred."
                 : message == ManageMessageId.AddPhoneSuccess ? "Your phone number was added."
                 : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
+                : message == ManageMessageId.UpdateProfileSuccess ? "Your profile name and phone number has been updated."
                 : "";
 
             var userId = User.Identity.GetUserId();
@@ -72,6 +76,25 @@ namespace TrashCollector.Controllers
                 Logins = await UserManager.GetLoginsAsync(userId),
                 BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId)
             };
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = User.Identity;
+                ViewBag.Name = user.Name;
+
+                ViewBag.displayAdmin = "No";
+
+                if (IsAdminUser())
+                {
+                    ViewBag.displayAdmin = "Yes";
+                }
+                return View(model);
+            }
+            else
+            {
+                ViewBag.Name = "Not Logged In";
+            }
+
             return View(model);
         }
 
@@ -98,7 +121,6 @@ namespace TrashCollector.Controllers
             }
             return RedirectToAction("ManageLogins", new { Message = message });
         }
-
         //
         // GET: /Manage/AddPhoneNumber
         public ActionResult AddPhoneNumber()
@@ -333,7 +355,7 @@ namespace TrashCollector.Controllers
             base.Dispose(disposing);
         }
 
-#region Helpers
+        #region Helpers
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
 
@@ -381,9 +403,136 @@ namespace TrashCollector.Controllers
             SetPasswordSuccess,
             RemoveLoginSuccess,
             RemovePhoneSuccess,
+            UpdateProfileSuccess,
             Error
         }
+        ///////////////////////////////////////////
 
-#endregion
+
+        #endregion
+        /// ////////////////////////////////////////////////////////////////////
+
+        //
+        // GET: /Manage/UpdateProfile
+        public ActionResult UpdateProfile()
+        {
+            ApplicationUser u = UserManager.FindById(User.Identity.GetUserId());
+            return View(u);
+        }
+        public ActionResult UpdateUserProfile(string id)
+        {
+            ApplicationUser u = UserManager.FindById(id);
+            return View("UpdateProfile", u);
+        }
+        //
+        // POST: /Manage/UpdateProfile
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> UpdateProfile(UpdateProfileViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            //Get current user
+            ApplicationUser m = UserManager.FindById(User.Identity.GetUserId());
+            //Update name and phone
+            m.FirstName = model.FirstName;
+            m.LastName = model.LastName;
+            m.PhoneNumber = model.PhoneNumber;
+
+            IdentityResult result = await UserManager.UpdateAsync(m);
+
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index", new { Message = ManageMessageId.UpdateProfileSuccess });
+            }
+            AddErrors(result);
+            return View(model);
+        }
+        //
+        // GET: /Manage/AddEmployee
+        public ActionResult AddEmployee()
+        {
+            return View();
+        }
+
+        private bool IsAdminUser()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = User.Identity;
+                ApplicationDbContext db = new ApplicationDbContext();
+                var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
+                var s = UserManager.GetRoles(user.GetUserId());
+                if (s[0].ToString() == "Admin")
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        //
+        // POST: /Manage/AddEmployee
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AddEmployee(AddEmployeeViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, PhoneNumber = model.PhoneNumber };
+                var result = await UserManager.CreateAsync(user, model.Password);
+
+                var db = new ApplicationDbContext();
+                var roleStore = new RoleStore<IdentityRole>(db);
+                var roleManager = new RoleManager<IdentityRole>(roleStore);
+
+                var userStore = new UserStore<ApplicationUser>(db);
+                var userManager = new UserManager<ApplicationUser>(userStore);
+                userManager.AddToRole(user.Id, "Collector");
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Manage");
+                }
+                AddErrors(result);
+
+            }
+                // If we got this far, something failed, redisplay form
+                return View(model);
+        }
+        //
+        // GET: /Manage/ListUsers
+        public ActionResult ListUsers()
+        {
+            return View(UserManager.Users.ToList());
+        }
+
+        //
+        //GET: /Manage/Delete/32432
+        public ActionResult DeleteUser(string id)
+        {
+            var db = new ApplicationDbContext();
+            var user = UserManager.FindById(id);
+            return View(user);
+        }
+        //
+        //Post: /Manage/Delete/32432
+        [HttpPost]
+        public void DeleteUser(DeleteUserViewModel model)
+        {
+            var db = new ApplicationDbContext();
+
+            var result = Membership.DeleteUser(model.User.UserName, false);
+
+            View();
+        }
+
     }
 }

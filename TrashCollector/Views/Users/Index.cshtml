@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+@if (ViewBag.displayAdmin == "Yes")
+{
+    <h1>Welcom Admin. Here you can add/edit users.</h1>
+    <h3>
+        <li> link to add new user or edit</li>
+    </h3>
+}
+else
+{
+    <h2> Welcome <strong>@ViewBag.Name</strong>. We will add more features here soon.</h2>
+}
+
+<h2>Index</h2>
+
