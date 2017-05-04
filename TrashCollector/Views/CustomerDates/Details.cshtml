@@ -1,0 +1,58 @@
+﻿@model TrashCollector.Models.CustomerDates
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>CustomerDates</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ApplicationUser.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ApplicationUser.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DefaultDay)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DefaultDay)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AlternatePickup)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AlternatePickup)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.VacationStart)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.VacationStart)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.VacationEnd)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.VacationEnd)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.UserId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

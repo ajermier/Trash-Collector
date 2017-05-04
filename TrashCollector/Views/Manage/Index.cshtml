@@ -34,19 +34,38 @@
         </dd>
         <dt>Update Address:</dt>
         <dd>
-            [ Address Link ]
+            [ @Html.ActionLink("Add/Edit Address", "Edit", "CustomerAddresses") ]
         </dd>
+        @if (ViewBag.displayCustomer == "Yes")
+        {
+            <dt>Set Pickup Dates:</dt>
+            <dd>
+                [ @Html.ActionLink("Add/Edit Pickup Dates", "Edit", "CustomerDates") ]
+            </dd>
+            <dt>View Bill:</dt>
+            <dd>
+                [ View Bills Link ]
+            </dd>
+        }
         @if (ViewBag.displayAdmin == "Yes")
         {
-        <dt>Add Employee:</dt>
-        <dd>
-            [ @Html.ActionLink("Add new employee", "AddEmployee") ]
-        </dd>
-        <dt>Edit User:</dt>
+            <dt>Add Employee:</dt>
+                <dd>
+                    [ @Html.ActionLink("Add new employee", "AddEmployee") ]
+                </dd>
+            <dt>Edit User:</dt>
                 <dd>
                     [ @Html.ActionLink("Edit user", "ListUsers") ]
                 </dd>
         }
+        @if (ViewBag.displayCollector == "Yes")
+        {
+            <dt>Pickups Today:</dt>
+                <dd>
+                    [ @Html.ActionLink("Today's Pickups", "CollectionList") ]
+                </dd>
+        }
+
 
         @*
             Phone Numbers can used as a second factor of verification in a two-factor authentication system.

@@ -28,8 +28,10 @@ namespace TrashCollector
                 roleManager.Create(role);
 
                 var user = new ApplicationUser();
-                user.UserName = "admin";
+                user.UserName = "aaron.jermier@gmail.com";
                 user.Email = "aaron.jermier@gmail.com";
+                user.FirstName = "Aaron";
+                user.LastName = "Jermier";
 
                 string userPWD = "SwissMan5!";
 

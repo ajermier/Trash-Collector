@@ -2,6 +2,10 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
+using System.Web.Security;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.Owin;
+using System;
 
 namespace TrashCollector.Models
 {
@@ -12,6 +16,7 @@ namespace TrashCollector.Models
         public string PhoneNumber { get; set; }
         public bool TwoFactor { get; set; }
         public bool BrowserRemembered { get; set; }
+        public string Id { get; set; }
     }
 
     public class ManageLoginsViewModel
@@ -129,6 +134,108 @@ namespace TrashCollector.Models
     }
     public class DeleteUserViewModel
     {
-        public ApplicationUser User { get; set; }
+        public DeleteUserViewModel(ApplicationUser user)
+        {
+            this.FirstName = user.FirstName;
+            this.LastName = user.LastName;
+            this.PhoneNumber = user.PhoneNumber;
+            this.Email = user.Email;
+            this.Id = user.Id;
+        }
+        [Required]
+        [Display(Name = "Id")]
+        public string Id { get; set; }
+        [Required]
+        [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
+        [Required]
+        [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
+        [Required]
+        [Phone]
+        [Display(Name = "Phone")]
+        public string PhoneNumber { get; set; }
+        [Required]
+        [EmailAddress]
+        [Display(Name = "Email")]
+        public string Email { get; set; }
     }
+    public class ListUserViewModel
+    {
+        public ListUserViewModel(ApplicationUser user)
+        {
+            var db = new ApplicationDbContext();
+            var roleStore = new RoleStore<IdentityRole>(db);
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
+
+            var userStore = new UserStore<ApplicationUser>(db);
+            var userManager = new UserManager<ApplicationUser>(userStore);
+
+            var address = user.CustomerAddress;
+            var dates = user.CustomerDates;
+
+            var roles = userManager.GetRoles(user.Id);
+            string roles2 = string.Join(", ", roles);
+
+            this.FirstName = user.FirstName;
+            this.LastName = user.LastName;
+            this.PhoneNumber = user.PhoneNumber;
+            this.Email = user.Email;
+            this.Id = user.Id;
+            this.UserRoles = roles2;
+            this.UserName = user.UserName;
+            if (address != null)
+            {
+                this.Address = address.Address1 + "/n" + user.CustomerAddress.Address2;
+                this.City = address.City;
+                this.State = address.State;
+                this.Zip = address.Zip;
+            }
+            if (dates != null)
+            {
+                this.DefaultDay = dates.DefaultDay;
+                this.AlternatePickup = dates.AlternatePickup;
+                this.VacationStart = dates.VacationStart;
+                this.VacationEnd = dates.VacationEnd;
+            }
+        }
+        public string Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Email { get; set; }
+        public string UserRoles { get; set; }
+        public string UserName { get; set; }
+        public string Address { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public int Zip { get; set; }
+        public DayOfWeek DefaultDay { get; set; }
+        public DateTime? AlternatePickup { get; set; }
+        public DateTime? VacationStart { get; set; }
+        public DateTime? VacationEnd { get; set; }
+    }
+    public class CollectorPickupsViewModel
+    {
+        public CollectorPickupsViewModel(ApplicationUser user)
+        {
+            this.FirstName = user.FirstName;
+            this.LastName = user.LastName;
+            this.PhoneNumber = user.PhoneNumber;
+            this.Address = user.CustomerAddress.Address1 + " " + user.CustomerAddress.Address2;
+            this.City = user.CustomerAddress.City;
+            this.State = user.CustomerAddress.State;
+            this.Zip = user.CustomerAddress.Zip;
+        }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Address { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public int Zip { get; set; }
+    }
+
 }

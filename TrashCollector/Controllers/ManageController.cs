@@ -65,6 +65,8 @@ namespace TrashCollector.Controllers
                 : message == ManageMessageId.AddPhoneSuccess ? "Your phone number was added."
                 : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
                 : message == ManageMessageId.UpdateProfileSuccess ? "Your profile name and phone number has been updated."
+                : message == ManageMessageId.UpdateDatesSuccess ? "Your pickup date preferences have been updated."
+                : message == ManageMessageId.UpdateAddressSuccess ? "Your address has been updated."
                 : "";
 
             var userId = User.Identity.GetUserId();
@@ -83,10 +85,20 @@ namespace TrashCollector.Controllers
                 ViewBag.Name = user.Name;
 
                 ViewBag.displayAdmin = "No";
+                ViewBag.displayCollector = "No";
+                ViewBag.displayCustomer = "No";
 
                 if (IsAdminUser())
                 {
                     ViewBag.displayAdmin = "Yes";
+                }
+                else if (IsCollectorUser())
+                {
+                    ViewBag.displayCollector = "Yes";
+                }
+                else if (IsCustomerUser())
+                {
+                    ViewBag.displayCustomer = "Yes";
                 }
                 return View(model);
             }
@@ -404,6 +416,8 @@ namespace TrashCollector.Controllers
             RemoveLoginSuccess,
             RemovePhoneSuccess,
             UpdateProfileSuccess,
+            UpdateDatesSuccess,
+            UpdateAddressSuccess,
             Error
         }
         ///////////////////////////////////////////
@@ -456,6 +470,42 @@ namespace TrashCollector.Controllers
         {
             return View();
         }
+        //
+        // GET: /Manage/CollectionList
+        public ActionResult CollectionList()
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+
+            var date = DateTime.Now;
+            var users = UserManager.Users.Where(w => w.CustomerDates != null).ToList();
+
+            var pickupList = users.Where(w => CheckDates(date, w) == true).Select(s => s).ToList();
+            List<CollectorPickupsViewModel> modelList = new List<CollectorPickupsViewModel>();
+
+            foreach (var u in pickupList)
+            {
+                var modelObject = new CollectorPickupsViewModel(u);
+                modelList.Add(modelObject);
+            }
+            return View(modelList);
+        }
+
+        public bool CheckDates(DateTime date, ApplicationUser user)
+        {
+            if(date >= user.CustomerDates.VacationStart && date < user.CustomerDates.VacationEnd)
+            {
+                return false;
+            }
+            else if(date == user.CustomerDates.AlternatePickup)
+            {
+                return true;
+            }
+            else if(date.DayOfWeek == user.CustomerDates.DefaultDay)
+            {
+                return true;
+            }
+            return false;
+        }
 
         private bool IsAdminUser()
         {
@@ -466,6 +516,44 @@ namespace TrashCollector.Controllers
                 var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
                 var s = UserManager.GetRoles(user.GetUserId());
                 if (s[0].ToString() == "Admin")
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
+        private bool IsCollectorUser()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = User.Identity;
+                ApplicationDbContext db = new ApplicationDbContext();
+                var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
+                var s = UserManager.GetRoles(user.GetUserId());
+                if (s[0].ToString() == "Collector")
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
+        private bool IsCustomerUser()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = User.Identity;
+                ApplicationDbContext db = new ApplicationDbContext();
+                var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
+                var s = UserManager.GetRoles(user.GetUserId());
+                if (s[0].ToString() == "Customer")
                 {
                     return true;
                 }
@@ -511,7 +599,15 @@ namespace TrashCollector.Controllers
         // GET: /Manage/ListUsers
         public ActionResult ListUsers()
         {
-            return View(UserManager.Users.ToList());
+            var userList = UserManager.Users.ToList();
+            List<ListUserViewModel> modelList = new List<ListUserViewModel>();
+
+            foreach(var u in userList)
+            {
+                var modelObject = new ListUserViewModel(u);
+                modelList.Add(modelObject);
+            }
+            return View(modelList);
         }
 
         //
@@ -519,20 +615,45 @@ namespace TrashCollector.Controllers
         public ActionResult DeleteUser(string id)
         {
             var db = new ApplicationDbContext();
-            var user = UserManager.FindById(id);
-            return View(user);
+            var user = db.Users.First(s => s.Id == id);
+            var model = new DeleteUserViewModel(user);
+            
+            return View(model);
         }
         //
         //Post: /Manage/Delete/32432
         [HttpPost]
-        public void DeleteUser(DeleteUserViewModel model)
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(string id)
         {
             var db = new ApplicationDbContext();
-
-            var result = Membership.DeleteUser(model.User.UserName, false);
-
-            View();
+            try
+            {
+            var user = db.Users.First(u => u.Id == id);
+            db.Users.Remove(user);
+            db.SaveChanges();
+            }
+            catch
+            {
+                return RedirectToAction("ListUsers");
+            }
+            return RedirectToAction("ListUsers");
         }
-
+        //
+        //GET: /Manage/ViewDetails/32432
+        public ActionResult ViewDetails(string id)
+        {
+            var db = new ApplicationDbContext();
+            try
+            {
+                var user = db.Users.First(u => u.Id == id);
+                var model = new ListUserViewModel(user);
+                return View(model);
+            }
+            catch
+            {
+                return RedirectToAction("ListUsers");
+            }
+        }
     }
 }

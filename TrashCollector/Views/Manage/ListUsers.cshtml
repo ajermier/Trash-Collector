@@ -1,14 +1,11 @@
-﻿@model IEnumerable<TrashCollector.Models.ApplicationUser>
+﻿@model IEnumerable<TrashCollector.Models.ListUserViewModel>
 
 @{
     ViewBag.Title = "ListUsers";
 }
 
-<h2>ListUsers</h2>
+<h2>User List</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
 <table class="table">
     <tr>
         <th>
@@ -25,6 +22,9 @@
         </th>
         <th>
             @Html.DisplayNameFor(model => model.UserName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UserRoles)
         </th>
         <th></th>
     </tr>
@@ -47,11 +47,17 @@
             @Html.DisplayFor(modelItem => item.UserName)
         </td>
         <td>
+            @Html.DisplayFor(modelItem => item.UserRoles)
+        </td>
+
+        <td>
             @Html.ActionLink("Edit", "UpdateUserProfile", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+            @Html.ActionLink("Details", "ViewDetails", new { id=item.Id }) |
             @Html.ActionLink("Delete", "DeleteUser", new { id=item.Id })
         </td>
     </tr>
 }
 
 </table>
+
+@Html.ActionLink("Back to Manage", "Index")

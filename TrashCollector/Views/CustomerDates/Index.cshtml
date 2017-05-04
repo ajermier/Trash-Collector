@@ -1,0 +1,57 @@
+﻿@model IEnumerable<TrashCollector.Models.CustomerDates>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ApplicationUser.FirstName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DefaultDay)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AlternatePickup)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.VacationStart)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.VacationEnd)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ApplicationUser.FirstName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DefaultDay)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AlternatePickup)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.VacationStart)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.VacationEnd)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.UserId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.UserId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.UserId })
+        </td>
+    </tr>
+}
+
+</table>

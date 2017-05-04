@@ -168,26 +168,41 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CustomerAddressesController.cs" />
+    <Compile Include="Controllers\CustomerDatesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201705012156038_add-migration %27added customer contact info class%27.cs" />
-    <Compile Include="Migrations\201705012156038_add-migration %27added customer contact info class%27.Designer.cs">
-      <DependentUpon>201705012156038_add-migration %27added customer contact info class%27.cs</DependentUpon>
+    <Compile Include="Migrations\201705041240151_restart2.cs" />
+    <Compile Include="Migrations\201705041240151_restart2.Designer.cs">
+      <DependentUpon>201705041240151_restart2.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201705021226273_removed customer model.cs" />
-    <Compile Include="Migrations\201705021226273_removed customer model.Designer.cs">
-      <DependentUpon>201705021226273_removed customer model.cs</DependentUpon>
+    <Compile Include="Migrations\201705041304202_updated attributes on address.cs" />
+    <Compile Include="Migrations\201705041304202_updated attributes on address.Designer.cs">
+      <DependentUpon>201705041304202_updated attributes on address.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201705021315155_name.cs" />
-    <Compile Include="Migrations\201705021315155_name.Designer.cs">
-      <DependentUpon>201705021315155_name.cs</DependentUpon>
+    <Compile Include="Migrations\201705041611015_update address.cs" />
+    <Compile Include="Migrations\201705041611015_update address.Designer.cs">
+      <DependentUpon>201705041611015_update address.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705041747188_Customer dates table update.cs" />
+    <Compile Include="Migrations\201705041747188_Customer dates table update.Designer.cs">
+      <DependentUpon>201705041747188_Customer dates table update.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705041753008_Customer dates table update nullable.cs" />
+    <Compile Include="Migrations\201705041753008_Customer dates table update nullable.Designer.cs">
+      <DependentUpon>201705041753008_Customer dates table update nullable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705041805517_Customer dates table update names.cs" />
+    <Compile Include="Migrations\201705041805517_Customer dates table update names.Designer.cs">
+      <DependentUpon>201705041805517_Customer dates table update names.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\CustomerAddress.cs" />
+    <Compile Include="Models\CustomerDates.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -255,6 +270,18 @@
     <Content Include="Views\Manage\AddEmployee.cshtml" />
     <Content Include="Views\Manage\ListUsers.cshtml" />
     <Content Include="Views\Manage\DeleteUser.cshtml" />
+    <Content Include="Views\Manage\ViewDetails.cshtml" />
+    <Content Include="Views\CustomerAddresses\Create.cshtml" />
+    <Content Include="Views\CustomerAddresses\Delete.cshtml" />
+    <Content Include="Views\CustomerAddresses\Details.cshtml" />
+    <Content Include="Views\CustomerAddresses\Edit.cshtml" />
+    <Content Include="Views\CustomerAddresses\Index.cshtml" />
+    <Content Include="Views\CustomerDates\Create.cshtml" />
+    <Content Include="Views\CustomerDates\Delete.cshtml" />
+    <Content Include="Views\CustomerDates\Details.cshtml" />
+    <Content Include="Views\CustomerDates\Edit.cshtml" />
+    <Content Include="Views\CustomerDates\Index.cshtml" />
+    <Content Include="Views\Manage\CollectionList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -268,14 +295,23 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201705012156038_add-migration %27added customer contact info class%27.resx">
-      <DependentUpon>201705012156038_add-migration %27added customer contact info class%27.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201705041240151_restart2.resx">
+      <DependentUpon>201705041240151_restart2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201705021226273_removed customer model.resx">
-      <DependentUpon>201705021226273_removed customer model.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201705041304202_updated attributes on address.resx">
+      <DependentUpon>201705041304202_updated attributes on address.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201705021315155_name.resx">
-      <DependentUpon>201705021315155_name.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201705041611015_update address.resx">
+      <DependentUpon>201705041611015_update address.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705041747188_Customer dates table update.resx">
+      <DependentUpon>201705041747188_Customer dates table update.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705041753008_Customer dates table update nullable.resx">
+      <DependentUpon>201705041753008_Customer dates table update nullable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705041805517_Customer dates table update names.resx">
+      <DependentUpon>201705041805517_Customer dates table update names.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

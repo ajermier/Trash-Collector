@@ -7,13 +7,13 @@ namespace TrashCollector.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class removedcustomermodel : IMigrationMetadata
+    public sealed partial class Customerdatestableupdatenullable : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(removedcustomermodel));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Customerdatestableupdatenullable));
         
         string IMigrationMetadata.Id
         {
-            get { return "201705021226273_removed customer model"; }
+            get { return "201705041753008_Customer dates table update nullable"; }
         }
         
         string IMigrationMetadata.Source

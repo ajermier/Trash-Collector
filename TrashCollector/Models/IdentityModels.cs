@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System.Collections;
+using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
@@ -11,6 +12,8 @@ namespace TrashCollector.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public virtual CustomerAddress CustomerAddress { get; set; }
+        public virtual CustomerDates CustomerDates { get; set; }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
@@ -31,5 +34,9 @@ namespace TrashCollector.Models
         {
             return new ApplicationDbContext();
         }
+
+        public DbSet<CustomerAddress> CustomerAddresses { get; set; }
+        public DbSet<CustomerDates> CustomerDates { get; set; }
+        public IEnumerable ApplicationUsers { get; internal set; }
     }
 }

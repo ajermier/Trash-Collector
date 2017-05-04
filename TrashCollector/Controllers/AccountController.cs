@@ -491,5 +491,19 @@ namespace TrashCollector.Controllers
             }
         }
         #endregion
+        /////////////////////////////////////////
+        [ChildActionOnly]
+        public string GetCurrentUserFirstName()
+        {
+            var user = UserManager.FindById(User.Identity.GetUserId());
+            if (user != null)
+            {
+                return user.FirstName;
+            }
+            else
+            {
+                return "";
+            }
+        }
     }
 }
