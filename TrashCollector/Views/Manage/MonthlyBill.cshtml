@@ -1,0 +1,35 @@
+﻿@model IEnumerable<TrashCollector.Models.BillViewModel>
+
+@{
+    ViewBag.Title = "MonthlyBill";
+}
+
+<h2>Monthly Bill</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Month)
+        </th>
+        <th>
+            Amount Due
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Month)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Sum)
+        </td>
+        <td>
+            @Html.ActionLink("Pay", "")
+        </td>
+    </tr>
+}
+
+</table>
+@Html.ActionLink("Back to My Account", "Index")

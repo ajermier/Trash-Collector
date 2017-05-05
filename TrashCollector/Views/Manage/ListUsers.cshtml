@@ -51,9 +51,10 @@
         </td>
 
         <td>
-            @Html.ActionLink("Edit", "UpdateUserProfile", new { id=item.Id }) |
-            @Html.ActionLink("Details", "ViewDetails", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "DeleteUser", new { id=item.Id })
+            @Html.ActionLink("Edit", "UpdateUserProfile", new { id = item.Id }) |
+            @Html.ActionLink("Details", "ViewDetails", new { id = item.Id }) |
+            @Html.ActionLink("Delete", "DeleteUser", new { id = item.Id })
+            @if (item.UserRoles == "Customer") {<text> |  </text> @Html.ActionLink("Add Pickup Charge", "GoToCharges", new { id = item.Id })}
         </td>
     </tr>
 }

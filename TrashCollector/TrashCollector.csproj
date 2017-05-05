@@ -169,6 +169,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CustomerAddressesController.cs" />
+    <Compile Include="Controllers\CustomerChargesController.cs" />
     <Compile Include="Controllers\CustomerDatesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -199,9 +200,35 @@
     <Compile Include="Migrations\201705041805517_Customer dates table update names.Designer.cs">
       <DependentUpon>201705041805517_Customer dates table update names.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705051428172_adding customer bills table.cs" />
+    <Compile Include="Migrations\201705051428172_adding customer bills table.Designer.cs">
+      <DependentUpon>201705051428172_adding customer bills table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705051640542_updating customer bills table.cs" />
+    <Compile Include="Migrations\201705051640542_updating customer bills table.Designer.cs">
+      <DependentUpon>201705051640542_updating customer bills table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705051823294_updating customer bills table2.cs" />
+    <Compile Include="Migrations\201705051823294_updating customer bills table2.Designer.cs">
+      <DependentUpon>201705051823294_updating customer bills table2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705052119134_adding collector table to assign zipcode.cs" />
+    <Compile Include="Migrations\201705052119134_adding collector table to assign zipcode.Designer.cs">
+      <DependentUpon>201705052119134_adding collector table to assign zipcode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705052133337_changes.cs" />
+    <Compile Include="Migrations\201705052133337_changes.Designer.cs">
+      <DependentUpon>201705052133337_changes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705052143318_changes to collectors.cs" />
+    <Compile Include="Migrations\201705052143318_changes to collectors.Designer.cs">
+      <DependentUpon>201705052143318_changes to collectors.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\Collectors.cs" />
     <Compile Include="Models\CustomerAddress.cs" />
+    <Compile Include="Models\CustomerCharges.cs" />
     <Compile Include="Models\CustomerDates.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -282,6 +309,12 @@
     <Content Include="Views\CustomerDates\Edit.cshtml" />
     <Content Include="Views\CustomerDates\Index.cshtml" />
     <Content Include="Views\Manage\CollectionList.cshtml" />
+    <Content Include="Views\CustomerCharges\Create.cshtml" />
+    <Content Include="Views\CustomerCharges\Delete.cshtml" />
+    <Content Include="Views\CustomerCharges\Details.cshtml" />
+    <Content Include="Views\CustomerCharges\Edit.cshtml" />
+    <Content Include="Views\CustomerCharges\Index.cshtml" />
+    <Content Include="Views\Manage\MonthlyBill.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -312,6 +345,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705041805517_Customer dates table update names.resx">
       <DependentUpon>201705041805517_Customer dates table update names.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705051428172_adding customer bills table.resx">
+      <DependentUpon>201705051428172_adding customer bills table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705051640542_updating customer bills table.resx">
+      <DependentUpon>201705051640542_updating customer bills table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705051823294_updating customer bills table2.resx">
+      <DependentUpon>201705051823294_updating customer bills table2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705052119134_adding collector table to assign zipcode.resx">
+      <DependentUpon>201705052119134_adding collector table to assign zipcode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705052133337_changes.resx">
+      <DependentUpon>201705052133337_changes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705052143318_changes to collectors.resx">
+      <DependentUpon>201705052143318_changes to collectors.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

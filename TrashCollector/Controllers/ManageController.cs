@@ -67,6 +67,8 @@ namespace TrashCollector.Controllers
                 : message == ManageMessageId.UpdateProfileSuccess ? "Your profile name and phone number has been updated."
                 : message == ManageMessageId.UpdateDatesSuccess ? "Your pickup date preferences have been updated."
                 : message == ManageMessageId.UpdateAddressSuccess ? "Your address has been updated."
+                : message == ManageMessageId.AddedChargeSuccess ? "Charge successfully added to customer."
+                : message == ManageMessageId.AddEmployeeSuccess ? "Successfully added employee."
                 : "";
 
             var userId = User.Identity.GetUserId();
@@ -418,6 +420,8 @@ namespace TrashCollector.Controllers
             UpdateProfileSuccess,
             UpdateDatesSuccess,
             UpdateAddressSuccess,
+            AddedChargeSuccess,
+            AddEmployeeSuccess,
             Error
         }
         ///////////////////////////////////////////
@@ -478,8 +482,11 @@ namespace TrashCollector.Controllers
 
             var date = DateTime.Now;
             var users = UserManager.Users.Where(w => w.CustomerDates != null).ToList();
+            var collector = UserManager.FindById(User.Identity.GetUserId());
+            var collectorZip = db.Collectors.Where(w => w.UserId == collector.Id).Select(s => s.ZipCode).First();
 
-            var pickupList = users.Where(w => CheckDates(date, w) == true).Select(s => s).ToList();
+            var pickupList = users.Where(w => CheckDates(date, w) == true).Select(s => s)
+                .Where(w => w.CustomerAddress.Zip == collectorZip).Select(s => s);
             List<CollectorPickupsViewModel> modelList = new List<CollectorPickupsViewModel>();
 
             foreach (var u in pickupList)
@@ -496,7 +503,7 @@ namespace TrashCollector.Controllers
             {
                 return false;
             }
-            else if(date == user.CustomerDates.AlternatePickup)
+            else if(user.CustomerDates.AlternatePickup != null && date.Day == user.CustomerDates.AlternatePickup.Value.Day)
             {
                 return true;
             }
@@ -585,10 +592,17 @@ namespace TrashCollector.Controllers
                 var userManager = new UserManager<ApplicationUser>(userStore);
                 userManager.AddToRole(user.Id, "Collector");
 
+                var newCollector = new Collectors();
+                newCollector.UserId = user.Id;
+                newCollector.ZipCode = model.ZipCode;
+                var result2 = db.Collectors.Add(newCollector);
+                db.SaveChanges();
+
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "Manage");
+                    return RedirectToAction("Index", "Manage", new { Message = ManageMessageId.AddEmployeeSuccess });
                 }
+
                 AddErrors(result);
 
             }
@@ -607,7 +621,7 @@ namespace TrashCollector.Controllers
                 var modelObject = new ListUserViewModel(u);
                 modelList.Add(modelObject);
             }
-            return View(modelList);
+            return View(modelList.OrderBy(o => o.UserRoles));
         }
 
         //
@@ -654,6 +668,50 @@ namespace TrashCollector.Controllers
             {
                 return RedirectToAction("ListUsers");
             }
+        }
+        //
+        //GET: /Manage/GoToCharges/32146543
+        public ActionResult GoToCharges(string id)
+        {
+            return RedirectToAction( "Create", "CustomerCharges", new { id = id });
+        }
+        //
+        // GET: /Manage/BillList
+        public ActionResult BillList()
+        {
+            ApplicationDbContext db = new ApplicationDbContext();
+
+            var date = DateTime.Now;
+            var userStore = new UserStore<ApplicationUser>(db);
+            var userManager = new UserManager<ApplicationUser>(userStore);
+            var user = userManager.FindById(User.Identity.GetUserId());
+
+            var billsList = db.CustomerCharges.Where(w => w.ApplicationUserId == user.Id).Select(s => s).ToList();
+            var monthList = from c in billsList
+                            group c by new
+                            {
+                                c.Date.Value.Month,
+                                c.Date.Value.Year
+                            } into grp
+                            select new MonthlyBill()
+                            {
+                                monthGroup = grp.Key.Month,
+                                month = new DateTime(grp.Key.Year, grp.Key.Month, 1).ToString("MMMM"),
+                                sum = grp.Sum(s => s.Charge)
+                            };
+            List<BillViewModel> modelList = new List<BillViewModel>();
+            foreach(var m in monthList)
+            {
+                var modelItem = new BillViewModel() { Month = m.month, Sum = m.sum };
+                modelList.Add(modelItem);
+            }
+            return View("MonthlyBill", modelList);
+        }
+        private class MonthlyBill
+        {
+            public int monthGroup;
+            public double sum;
+            public string month;
         }
     }
 }

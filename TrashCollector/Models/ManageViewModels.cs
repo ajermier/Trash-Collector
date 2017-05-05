@@ -121,6 +121,10 @@ namespace TrashCollector.Models
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
+        [Required(ErrorMessage = "Zip code is required.")]
+        [RegularExpression(@"\d{5}$", ErrorMessage = "Invalid Zip Code")]
+        [Display(Name = "Assigned Zip Code")]
+        public int ZipCode { get; set; }
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
@@ -131,6 +135,7 @@ namespace TrashCollector.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
     }
     public class DeleteUserViewModel
     {
@@ -228,6 +233,7 @@ namespace TrashCollector.Models
             this.City = user.CustomerAddress.City;
             this.State = user.CustomerAddress.State;
             this.Zip = user.CustomerAddress.Zip;
+            this.AddressString = $"{this.Address}, {this.City}, {this.State}, {this.Zip}";
         }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -236,6 +242,12 @@ namespace TrashCollector.Models
         public string City { get; set; }
         public string State { get; set; }
         public int Zip { get; set; }
+        public string AddressString { get; set; }
+    }
+    public class BillViewModel
+    {
+        public double Sum { get; set; }
+        public string Month { get; set; }
     }
 
 }

@@ -69,20 +69,56 @@
         width: 100%;
     }
 </style>
-    <h3>My Google Maps Demo</h3>
+    <h3>Map</h3>
     <div id="map"></div>
     <script>
+
+        var customers = @Html.Raw(Json.Encode(Model));
+
         function initMap()
         {
-            var uluru = { lat: -25.363, lng: 131.044 };
+            var WI = { lat: 43.02, lng: -87.86 };
             var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 4,
-                center: uluru
+                zoom: 12,
+                center: WI
             });
-            var marker = new google.maps.Marker({
-                position: uluru,
-                map: map
-            });
+            var geocoder = new google.maps.Geocoder();
+            geocodeAddress(geocoder, map);
+        }
+
+        function geocodeAddress(geocoder, resultsMap){
+            var bounds = new google.maps.LatLngBounds();
+            for(var i = 0; i < customers.length; i++){
+                var address = customers[i].AddressString;
+                var contentString = '<div>' + '<strong>' + customers[i].FirstName + ' ' + customers[i].LastName + '</strong>' + '</div>' +
+                                    '<div>' + customers[i].Address + '</div>' +
+                                    '<div>' + customers[i].City + ',' + '</div>' +
+                                    '<div>' + customers[i].State + ' ' + customers[i].Zip + '</div>' +
+                '<div>' + 'Phone: ' + customers[i].PhoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3") + '</div>';
+                geocoder.geocode({'address': address}, function(results, status){
+                if(status=='OK'){
+                    resultsMap.setCenter(results[0].geometry.location);
+                    var infowindow = new google.maps.InfoWindow({
+                        content: contentString
+                    })
+                    var marker = new google.maps.Marker({
+                        map: resultsMap, 
+                        position: results[0].geometry.location,
+                    });
+                    marker.addListener('mouseover', function() {
+                        infowindow.open(resultsMap, marker)
+                    });
+                    marker.addListener('mouseout', function() {
+                        infowindow.close()
+                    });
+                    bounds.extend(marker.position);
+                    resultsMap.fitBounds(bounds);
+                    resultsMap.panToBounds(bounds);
+                } else{
+                    alert('Geocode was not successful for the following reason: ' + status);
+                }
+                });
+            }
         }
     </script>
     <script async defer
