@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using TrashCollector.Models;
 using static TrashCollector.Controllers.ManageController;
 
@@ -44,7 +45,6 @@ namespace TrashCollector.Controllers
         {
             var model = new CustomerCharges();
             model.ApplicationUserId = id;
-
             //ViewBag.ApplicationUserId = new SelectList(db.ApplicationUsers, "Id", "FirstName");
             return View(model);
         }
@@ -63,7 +63,6 @@ namespace TrashCollector.Controllers
                 return RedirectToAction("Index", "Manage", new { Message = ManageMessageId.AddedChargeSuccess });
             }
 
-            //ViewBag.ApplicationUserId = new SelectList(db.ApplicationUsers, "Id", "FirstName", customerCharges.ApplicationUserId);
             return View(model);
         }
 

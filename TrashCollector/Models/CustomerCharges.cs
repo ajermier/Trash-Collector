@@ -19,5 +19,6 @@ namespace TrashCollector.Models
         public double Charge { get; set; }
         public string ApplicationUserId { get; set; }
         public virtual ApplicationUser ApplicationUser { get; set; }
+        
     }
 }

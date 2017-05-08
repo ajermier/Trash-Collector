@@ -69,56 +69,126 @@
         width: 100%;
     }
 </style>
-    <h3>Map</h3>
-    <div id="map"></div>
+<h3>Map</h3>
+<div id="map"></div>
+<h3>Route Summary</h3>
+<div id="directions-panel"></div>
+<br />
+<div>@Html.ActionLink("Back to My Account", "Index")</div>
+
+
+
     <script>
 
         var customers = @Html.Raw(Json.Encode(Model));
+        var waypoints = [];
+        var markers = [];
+        var contentArray = [];
 
         function initMap()
         {
+            //Initialize map
             var WI = { lat: 43.02, lng: -87.86 };
+            var infowindow = new google.maps.InfoWindow();
+            var geocoder = new google.maps.Geocoder();
             var map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 12,
                 center: WI
             });
-            var geocoder = new google.maps.Geocoder();
-            geocodeAddress(geocoder, map);
-        }
-
-        function geocodeAddress(geocoder, resultsMap){
-            var bounds = new google.maps.LatLngBounds();
+            //set up geocoder and directions
             for(var i = 0; i < customers.length; i++){
-                var address = customers[i].AddressString;
+                address = customers[i].AddressString;
+                waypoints.push(address);
                 var contentString = '<div>' + '<strong>' + customers[i].FirstName + ' ' + customers[i].LastName + '</strong>' + '</div>' +
                                     '<div>' + customers[i].Address + '</div>' +
                                     '<div>' + customers[i].City + ',' + '</div>' +
                                     '<div>' + customers[i].State + ' ' + customers[i].Zip + '</div>' +
                 '<div>' + 'Phone: ' + customers[i].PhoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3") + '</div>';
-                geocoder.geocode({'address': address}, function(results, status){
-                if(status=='OK'){
-                    resultsMap.setCenter(results[0].geometry.location);
-                    var infowindow = new google.maps.InfoWindow({
-                        content: contentString
-                    })
-                    var marker = new google.maps.Marker({
-                        map: resultsMap, 
-                        position: results[0].geometry.location,
-                    });
-                    marker.addListener('mouseover', function() {
-                        infowindow.open(resultsMap, marker)
-                    });
-                    marker.addListener('mouseout', function() {
-                        infowindow.close()
-                    });
-                    bounds.extend(marker.position);
-                    resultsMap.fitBounds(bounds);
-                    resultsMap.panToBounds(bounds);
-                } else{
-                    alert('Geocode was not successful for the following reason: ' + status);
+                contentArray.push(contentString);
+                GeocodeAddress(geocoder, address, map, contentArray, infowindow, i);
+            }
+            var directionsService = new google.maps.DirectionsService;
+            var directionsDisplay = new google.maps.DirectionsRenderer({
+                suppressMarkers: true
+            });
+            directionsDisplay.setMap(map);
+            calculateAndDisplayRoute(directionsService, directionsDisplay);
+            //Marker for the company location
+            var infowindow = new google.maps.InfoWindow({
+                content: '<strong>Trash Collector Co., Johnson Creek, WI</strong>'
+            })
+            var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(43.079147, -88.771030),
+                map: map
+            });
+            marker.addListener('mouseover', function() {
+                infowindow.open(map, marker)
+            });
+            marker.addListener('mouseout', function() {
+                infowindow.close()
+            });
+        }
+        function GeocodeAddress(geocoder, location, resultsMap, contentArray, infowindow, index) {
+            geocoder.geocode( { 'address': location}, function(results, status) {
+                //alert(status);
+                if (status == google.maps.GeocoderStatus.OK) {
+                    //alert(results[0].geometry.location);
+                    CreateMarker(results[0].geometry.location,location[0]+"<br>"+location[1], resultsMap, contentArray, infowindow, index);
                 }
+                else
+                {
+                    alert("Problem with Geocode." + status);
+                }
+            }); 
+        }
+        function CreateMarker(latlng, content, resultsMap, contentArray, infowindow, index){
+            var marker = new google.maps.Marker({
+                position: latlng,
+                map: resultsMap
+            }); 
+            google.maps.event.addListener(marker, 'mouseover', function() { 
+                infowindow.setContent(contentArray[index]);
+                infowindow.open(resultsMap, marker);
+            });		
+            google.maps.event.addListener(marker, 'mouseout', function() { 
+                infowindow.close();
+            });
+        }
+        function calculateAndDisplayRoute(directionsService, directionsDisplay){
+            var waypointObject = [];
+            for (var i = 0; i < waypoints.length; i++){
+                waypointObject.push({
+                    location: waypoints[i],
+                    stopover: true
                 });
             }
+            directionsService.route({
+                origin: new google.maps.LatLng(43.079147, -88.771030),
+                destination: new google.maps.LatLng(43.079147, -88.771030),
+                waypoints: waypointObject,
+                optimizeWaypoints: true,
+                travelMode: 'DRIVING'
+            }, function(response, status) {
+                if (status == 'OK') {
+                    directionsDisplay.setDirections(response);
+                    var route = response.routes[0];
+                    var summaryPanel = document.getElementById('directions-panel');
+                    summaryPanel.innterHTML = '';
+                    for (var i = 0; i < route.legs.length; i++) {
+                        var routeSegment = i + 1;
+                        summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment +
+                            '</b><br>';
+                        summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
+                        summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
+                        summaryPanel.innerHTML += route.legs[i].distance.text + '<br><br>';
+                        for(var j = 0; j < route.legs[i].steps.length; j++){
+                            summaryPanel.innerHTML += route.legs[i].steps[j].instructions + '<br>'
+                        }
+                    }
+                } else {
+                    window.alert('Directions request failed due to ' + status);
+                }
+            });
         }
     </script>
     <script async defer
