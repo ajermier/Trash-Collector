@@ -47,5 +47,12 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "ListUsers")
+    @if (ViewBag.displayAdmin == "Yes")
+        {
+            @Html.ActionLink("Back to List", "ListUsers");
+        }
+        else
+        {
+            @Html.ActionLink("Back to My Account", "Index");
+        }
 </div>

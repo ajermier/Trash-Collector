@@ -60,7 +60,7 @@ namespace TrashCollector.Controllers
                 var address = new CustomerAddress() { UserId = user.Id, Address1 = model.Address1, Address2 = model.Address2, City = model.City, State = model.State, Zip = model.Zip };
                 db.CustomerAddresses.Add(address);
                 db.SaveChanges();
-                return RedirectToAction("Index", "Manage", new { Message = ManageMessageId.UpdateAddressSuccess });
+                return RedirectToAction("Create", "CustomerDates");
             }
 
             //ViewBag.UserId = new SelectList(db.ApplicationUsers, "Id", "FirstName", customerAddress.UserId);

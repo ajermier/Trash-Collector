@@ -44,8 +44,9 @@ namespace TrashCollector.Controllers
         public ActionResult Create(string id)
         {
             var model = new CustomerCharges();
+            var user = db.Users.First(u => u.Id == id);
             model.ApplicationUserId = id;
-            //ViewBag.ApplicationUserId = new SelectList(db.ApplicationUsers, "Id", "FirstName");
+            ViewBag.UserName = user.UserName;
             return View(model);
         }
 

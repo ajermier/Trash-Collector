@@ -10,6 +10,7 @@ using TrashCollector.Models;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Collections.Generic;
 using System.Web.Security;
+using System.Globalization;
 
 namespace TrashCollector.Controllers
 {
@@ -435,11 +436,45 @@ namespace TrashCollector.Controllers
         public ActionResult UpdateProfile()
         {
             ApplicationUser u = UserManager.FindById(User.Identity.GetUserId());
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = User.Identity;
+                ViewBag.Name = user.Name;
+
+                ViewBag.displayAdmin = "No";
+
+                if (IsAdminUser())
+                {
+                    ViewBag.displayAdmin = "Yes";
+                }
+                return View(u);
+            }
+            else
+            {
+                ViewBag.Name = "Not Logged In";
+            }
             return View(u);
         }
         public ActionResult UpdateUserProfile(string id)
         {
             ApplicationUser u = UserManager.FindById(id);
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = User.Identity;
+                ViewBag.Name = user.Name;
+
+                ViewBag.displayAdmin = "No";
+
+                if (IsAdminUser())
+                {
+                    ViewBag.displayAdmin = "Yes";
+                }
+                return View("UpdateProfile", u);
+            }
+            else
+            {
+                ViewBag.Name = "Not Logged In";
+            }
             return View("UpdateProfile", u);
         }
         //
@@ -499,13 +534,18 @@ namespace TrashCollector.Controllers
 
         public bool CheckDates(DateTime date, ApplicationUser user)
         {
-            if(date >= user.CustomerDates.VacationStart && date < user.CustomerDates.VacationEnd)
+            var alternateDay = user.CustomerDates.AlternatePickup;
+            DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
+            Calendar calendar = dfi.Calendar;
+
+            if (date >= user.CustomerDates.VacationStart && date < user.CustomerDates.VacationEnd)
             {
                 return false;
             }
-            else if(user.CustomerDates.AlternatePickup != null && date.Day == user.CustomerDates.AlternatePickup.Value.Day)
+            else if(alternateDay != null && calendar.GetWeekOfYear(date, CalendarWeekRule.FirstDay, DayOfWeek.Monday) == calendar.GetWeekOfYear(alternateDay.Value, CalendarWeekRule.FirstDay, DayOfWeek.Monday))
             {
-                return true;
+                if (date.Day == alternateDay.Value.Day) return true;
+                else return false;
             }
             else if(date.DayOfWeek == user.CustomerDates.DefaultDay)
             {
@@ -702,10 +742,10 @@ namespace TrashCollector.Controllers
             List<BillViewModel> modelList = new List<BillViewModel>();
             foreach(var m in monthList)
             {
-                var modelItem = new BillViewModel() { Month = m.month, Sum = m.sum };
+                var modelItem = new BillViewModel() { Month = m.month, Sum = m.sum, MonthInt = m.monthGroup};
                 modelList.Add(modelItem);
             }
-            return View("MonthlyBill", modelList);
+            return View("MonthlyBill", modelList.OrderBy(o => o.MonthInt));
         }
         private class MonthlyBill
         {

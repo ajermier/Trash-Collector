@@ -161,7 +161,7 @@ namespace TrashCollector.Controllers
 
                 var userStore = new UserStore<ApplicationUser>(db);
                 var userManager = new UserManager<ApplicationUser>(userStore);
-                userManager.AddToRole(user.Id, "Customer");
+                userManager.AddToRole(userManager.FindById(user.Id).Id, "Customer");
 
                 if (result.Succeeded)
                 {
@@ -173,7 +173,7 @@ namespace TrashCollector.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("Index", "Manage");
+                    return RedirectToAction("Create", "CustomerAddresses");
                 }
                 AddErrors(result);
             }

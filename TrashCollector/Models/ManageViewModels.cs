@@ -246,8 +246,10 @@ namespace TrashCollector.Models
     }
     public class BillViewModel
     {
+        [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = true)]
         public double Sum { get; set; }
         public string Month { get; set; }
+        public int MonthInt { get; set; }
     }
 
 }
