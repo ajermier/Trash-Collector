@@ -88,7 +88,7 @@
         function initMap()
         {
             //Initialize map
-            var WI = { lat: 43.02, lng: -87.86 };
+            var WI = { lat: 43.079147, lng: -88.771030 };
             var infowindow = new google.maps.InfoWindow();
             var geocoder = new google.maps.Geocoder();
             var map = new google.maps.Map(document.getElementById('map'), {
@@ -114,19 +114,22 @@
             directionsDisplay.setMap(map);
             calculateAndDisplayRoute(directionsService, directionsDisplay);
             //Marker for the company location
-            var infowindow = new google.maps.InfoWindow({
-                content: '<strong>Trash Collector Co., Johnson Creek, WI</strong>'
-            })
             var marker = new google.maps.Marker({
                 position: new google.maps.LatLng(43.079147, -88.771030),
                 map: map
             });
-            marker.addListener('mouseover', function() {
-                infowindow.open(map, marker)
-            });
-            marker.addListener('mouseout', function() {
-                infowindow.close()
-            });
+            var infowindow = new google.maps.InfoWindow({
+                content: '<strong>Trash Collector Co., Johnson Creek, WI</strong>',
+                position: new google.maps.LatLng(43.079147, -88.771030)
+            })
+            infowindow.open(map);
+            //infowindow.setOptions
+            //marker.addListener('mouseover', function() {
+            //    infowindow.open(map, marker)
+            //});
+            //marker.addListener('mouseout', function() {
+            //    infowindow.close()
+            //});
         }
         function GeocodeAddress(geocoder, location, resultsMap, contentArray, infowindow, index) {
             geocoder.geocode( { 'address': location}, function(results, status) {

@@ -207,19 +207,33 @@ namespace TrashCollector.Models
             }
         }
         public string Id { get; set; }
+        [Display(Name = "First Name")]
         public string FirstName { get; set; }
+        [Display(Name = "Last Name")]
         public string LastName { get; set; }
+        [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; }
+        [Display(Name = "Email")]
         public string Email { get; set; }
+        [Display(Name = "Role")]
         public string UserRoles { get; set; }
+        [Display(Name = "User Name")]
         public string UserName { get; set; }
+        [Display(Name = "Address")]
         public string Address { get; set; }
+        [Display(Name = "City")]
         public string City { get; set; }
+        [Display(Name = "State")]
         public string State { get; set; }
+        [Display(Name = "Zip")]
         public int Zip { get; set; }
+        [Display(Name = "Default Day")]
         public DayOfWeek DefaultDay { get; set; }
+        [Display(Name = "Alternate Day")]
         public DateTime? AlternatePickup { get; set; }
+        [Display(Name = "Vacation Start")]
         public DateTime? VacationStart { get; set; }
+        [Display(Name = "Vacation End")]
         public DateTime? VacationEnd { get; set; }
     }
     public class CollectorPickupsViewModel
@@ -235,19 +249,28 @@ namespace TrashCollector.Models
             this.Zip = user.CustomerAddress.Zip;
             this.AddressString = $"{this.Address}, {this.City}, {this.State}, {this.Zip}";
         }
+        [Display(Name = "First Name")]
         public string FirstName { get; set; }
+        [Display(Name = "Last Name")]
         public string LastName { get; set; }
+        [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; }
+        [Display(Name = "Address")]
         public string Address { get; set; }
+        [Display(Name = "City")]
         public string City { get; set; }
+        [Display(Name = "State")]
         public string State { get; set; }
+        [Display(Name = "Zip")]
         public int Zip { get; set; }
         public string AddressString { get; set; }
     }
     public class BillViewModel
     {
         [DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Total")]
         public double Sum { get; set; }
+        [Display(Name = "Statement Month")]
         public string Month { get; set; }
         public int MonthInt { get; set; }
     }

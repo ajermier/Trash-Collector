@@ -1,17 +1,17 @@
 ﻿@model TrashCollector.Models.AddEmployeeViewModel
 
 @{
-    ViewBag.Title = "AddEmployee";
+    ViewBag.Title = "Add Employee";
 }
 
-<h2>AddEmployee</h2>
+<h2>Add Employee</h2>
 
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>AddEmployeeViewModel</h4>
+
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
