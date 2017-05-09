@@ -103,7 +103,7 @@ namespace TrashCollector.Controllers
                 return RedirectToAction("Index", "Manage", new { Message = ManageMessageId.UpdateAddressSuccess });
             }
             //ViewBag.UserId = new SelectList(db.ApplicationUsers, "Id", "FirstName", customerAddress.UserId);
-            return View(customerAddress);
+            return View();
         }
 
         // GET: CustomerAddresses1/Delete/5

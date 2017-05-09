@@ -224,6 +224,10 @@
     <Compile Include="Migrations\201705052143318_changes to collectors.Designer.cs">
       <DependentUpon>201705052143318_changes to collectors.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705091358209_changes1.cs" />
+    <Compile Include="Migrations\201705091358209_changes1.Designer.cs">
+      <DependentUpon>201705091358209_changes1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Collectors.cs" />
@@ -364,6 +368,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705052143318_changes to collectors.resx">
       <DependentUpon>201705052143318_changes to collectors.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705091358209_changes1.resx">
+      <DependentUpon>201705091358209_changes1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

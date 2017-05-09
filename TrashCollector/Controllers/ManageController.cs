@@ -63,11 +63,11 @@ namespace TrashCollector.Controllers
                 : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
                 : message == ManageMessageId.SetTwoFactorSuccess ? "Your two-factor authentication provider has been set."
                 : message == ManageMessageId.Error ? "An error has occurred."
-                : message == ManageMessageId.AddPhoneSuccess ? "Your phone number was added."
-                : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
-                : message == ManageMessageId.UpdateProfileSuccess ? "Your profile name and phone number has been updated."
-                : message == ManageMessageId.UpdateDatesSuccess ? "Your pickup date preferences have been updated."
-                : message == ManageMessageId.UpdateAddressSuccess ? "Your address has been updated."
+                : message == ManageMessageId.AddPhoneSuccess ? "Phone number was added."
+                : message == ManageMessageId.RemovePhoneSuccess ? "Phone number was removed."
+                : message == ManageMessageId.UpdateProfileSuccess ? "Profile name and phone number has been updated."
+                : message == ManageMessageId.UpdateDatesSuccess ? "Pickup date preferences have been updated."
+                : message == ManageMessageId.UpdateAddressSuccess ? "Address has been updated."
                 : message == ManageMessageId.AddedChargeSuccess ? "Charge successfully added to customer."
                 : message == ManageMessageId.AddEmployeeSuccess ? "Successfully added employee."
                 : "";
@@ -483,12 +483,12 @@ namespace TrashCollector.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> UpdateProfile(UpdateProfileViewModel model)
         {
+            ApplicationUser m = UserManager.FindById(User.Identity.GetUserId());
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return View("UpdateProfile", m);
             }
             //Get current user
-            ApplicationUser m = UserManager.FindById(User.Identity.GetUserId());
             //Update name and phone
             m.FirstName = model.FirstName;
             m.LastName = model.LastName;
@@ -500,8 +500,8 @@ namespace TrashCollector.Controllers
             {
                 return RedirectToAction("Index", new { Message = ManageMessageId.UpdateProfileSuccess });
             }
-            AddErrors(result);
-            return View(model);
+            //AddErrors(result);
+            return View("UpdateProfile", m.Id);
         }
         //
         // GET: /Manage/AddEmployee

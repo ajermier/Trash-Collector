@@ -90,15 +90,15 @@ namespace TrashCollector.Models
     }
     public class UpdateProfileViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "First name is required.")]
         [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Last name is required.")]
         [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Phone number is required.")]
         [Phone]
         [Display(Name = "Phone")]
         public string PhoneNumber { get; set; }
@@ -207,13 +207,17 @@ namespace TrashCollector.Models
             }
         }
         public string Id { get; set; }
+        [Required(ErrorMessage = "First name is required.")]
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
         [Display(Name = "Last Name")]
+        [Required(ErrorMessage = "Last name is required.")]
         public string LastName { get; set; }
         [Display(Name = "Phone Number")]
+        [Required(ErrorMessage = "Phone number is required.")]
         public string PhoneNumber { get; set; }
         [Display(Name = "Email")]
+        [Required(ErrorMessage = "Email is required.")]
         public string Email { get; set; }
         [Display(Name = "Role")]
         public string UserRoles { get; set; }
@@ -222,12 +226,16 @@ namespace TrashCollector.Models
         [Display(Name = "Address")]
         public string Address { get; set; }
         [Display(Name = "City")]
+        [Required(ErrorMessage = "City is required.")]
         public string City { get; set; }
         [Display(Name = "State")]
+        [Required(ErrorMessage = "State is required.")]
         public string State { get; set; }
         [Display(Name = "Zip")]
+        [Required(ErrorMessage = "Zip code is required.")]
         public int Zip { get; set; }
         [Display(Name = "Default Day")]
+        [Required(ErrorMessage = "Default Day is required.")]
         public DayOfWeek DefaultDay { get; set; }
         [Display(Name = "Alternate Day")]
         public DateTime? AlternatePickup { get; set; }
